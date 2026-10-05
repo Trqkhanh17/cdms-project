@@ -1,8 +1,17 @@
-from inventory_service.views import ProductDetailAPIView
 from django.urls import path
-from inventory_service.views import ProductListAPIView
+from inventory_service.views import ProductDetailAPIView, ProductListAPIView
+
+PRODUCTS_PATH = "Products"
 
 urlpatterns = [
-    path('products',ProductListAPIView.as_view(), name='products-list'),
-    path('product/<int:product_id>',ProductDetailAPIView.as_view(), name='products-detail')
+    path(
+        PRODUCTS_PATH,
+        ProductListAPIView.as_view(),
+        name="products-list",
+    ),
+    path(
+        f"{PRODUCTS_PATH}/<int:product_id>",
+        ProductDetailAPIView.as_view(),
+        name="products-detail",
+    ),
 ]
