@@ -40,7 +40,6 @@ INSTALLED_APPS = [
     "django.contrib.staticfiles",
     "rest_framework",
     "inventory_service",
-    "cdms",    
 ]
 
 MIDDLEWARE = [
