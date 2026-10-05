@@ -5,6 +5,7 @@ from inventory_service.serializers import (
     ProductSerializer,
     ProductCreateAndUpdateSerializer,
 )
+from inventory_service.clients.cdms_webhook_client import CdmsWebhookClient
 from inventory_service.service import ProductService
 from common.api_exceptions import api_exception_handler
 
@@ -21,6 +22,7 @@ class ProductListAPIView(APIView):
         input_serializer.is_valid(raise_exception=True)
         product = ProductService().create_product(input_serializer.validated_data)
         output_serializer = ProductSerializer(product)
+        CdmsWebhookClient().send_product(output_serializer.data)
         return Response(output_serializer.data, status=status.HTTP_201_CREATED)
 
 
@@ -42,4 +44,5 @@ class ProductDetailAPIView(APIView):
             product, product_data=input_serializer.validated_data
         )
         output_serializer = ProductSerializer(update_product)
+        CdmsWebhookClient().send_product(output_serializer.data)
         return Response(output_serializer.data, status=status.HTTP_200_OK)

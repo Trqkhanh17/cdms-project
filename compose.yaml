@@ -17,5 +17,42 @@ services:
       timeout: 5s
       retries: 10
 
+  web:
+    build: .
+    command: sh -c "python manage.py migrate && python manage.py runserver 0.0.0.0:8000"
+    environment:
+      POSTGRES_DB: ${POSTGRES_DB}
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      POSTGRES_HOST: postgres
+      POSTGRES_PORT: 5432
+      ALLOWED_HOSTS: web,localhost,127.0.0.1
+      CDMS_WEBHOOK_URL: http://web:8000/api/v1/webhooks/products
+      CDMS_INVENTORY_PRODUCTS_URL: http://web:8000/api/v1/Products
+      CDMS_SCHEDULE_INTERVAL_SECONDS: 60
+    ports:
+      - "8000:8000"
+    depends_on:
+      postgres:
+        condition: service_healthy
+
+  scheduler:
+    build: .
+    command: sh -c "python manage.py migrate && python manage.py run_cdms_scheduler"
+    environment:
+      POSTGRES_DB: ${POSTGRES_DB}
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      POSTGRES_HOST: postgres
+      POSTGRES_PORT: 5432
+      ALLOWED_HOSTS: web,localhost,127.0.0.1
+      CDMS_INVENTORY_PRODUCTS_URL: http://web:8000/api/v1/Products
+      CDMS_SCHEDULE_INTERVAL_SECONDS: 60
+    depends_on:
+      postgres:
+        condition: service_healthy
+      web:
+        condition: service_started
+
 volumes:
   postgres_data:

@@ -13,7 +13,8 @@ https://docs.djangoproject.com/en/4.2/ref/settings/
 from pathlib import Path
 import os
 from dotenv import load_dotenv
-# Build paths inside the project like this: BASE_DIR / 'subdir'.    
+
+# Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 load_dotenv(BASE_DIR / ".env")
 
@@ -26,7 +27,22 @@ SECRET_KEY = "django-insecure-@y_kxam3odm2=(@$$e5%*mk%@-brch7w$y-55ld1jkx!bq-%@4
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = os.getenv(
+    "ALLOWED_HOSTS",
+    "127.0.0.1,localhost,web",
+).split(",")
+
+CDMS_WEBHOOK_URL = os.getenv(
+    "CDMS_WEBHOOK_URL",
+    "http://127.0.0.1:8000/api/v1/webhooks/products",
+)
+CDMS_INVENTORY_PRODUCTS_URL = os.getenv(
+    "CDMS_INVENTORY_PRODUCTS_URL",
+    "http://127.0.0.1:8000/api/v1/Products",
+)
+CDMS_SCHEDULE_INTERVAL_SECONDS = int(
+    os.getenv("CDMS_SCHEDULE_INTERVAL_SECONDS", "60")
+)
 
 
 # Application definition
@@ -40,7 +56,7 @@ INSTALLED_APPS = [
     "django.contrib.staticfiles",
     "rest_framework",
     "inventory_service",
-    "cdms",    
+    "cdms",
 ]
 
 MIDDLEWARE = [

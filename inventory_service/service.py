@@ -20,6 +20,10 @@ class ProductService:
         with transaction.atomic():
             return self.repository.create_product(product_data)
 
-    def update_product(self,product:Product, product_data:dict)->Product:
+    def update_product(self, product: Product, product_data: dict) -> Product:
         with transaction.atomic():
-            return self.repository.update_product(product,product_data)
+            for field, value in product_data.items():
+                if getattr(product, field) != value:
+                    return self.repository.update_product(product, product_data)
+
+            return product
