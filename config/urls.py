@@ -22,4 +22,5 @@ API_PREFIX = "api/v1/"
 urlpatterns = [
     path("admin/", admin.site.urls),
     path(API_PREFIX, include("inventory_service.urls")),
+    path(API_PREFIX, include("cdms.urls")),
 ]
